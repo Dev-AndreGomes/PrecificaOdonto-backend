@@ -262,7 +262,7 @@ Dado o `precoPraticado` informado pela dentista:
 6. [ ] Kit inicial pré-carregado.
 7. [ ] Exportação `.xlsx` (Apache POI) com fórmulas vivas.
 8. [ ] Integração com o frontend React (repo separado).
-9. [ ] (Futuro) Webhook de pagamento, hospedagem em nuvem, modo Clínica Consolidada.
+9. [ ] (Futuro) Webhook de pagamento, login social com Google OAuth2, hospedagem em nuvem, modo Clínica Consolidada.
 
 ### Decisões em aberto (perguntar ao autor antes de assumir)
 - **Estratégia de schema:** `application.properties` está hoje com `spring.jpa.hibernate.ddl-auto=update` (conveniência de início). Há uma dependência de **Flyway** no `pom.xml`, mas **nenhuma migração existe** (as `V1`/`V2` foram removidas de propósito, a pedido do autor). Definir: manter `update` no início e migrar para Flyway depois, ou adotar Flyway já. Antes de produção, **`ddl-auto=update` não deve ser usado**.

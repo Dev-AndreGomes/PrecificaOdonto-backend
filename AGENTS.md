@@ -270,7 +270,7 @@ Dado o `precoPraticado` informado pela dentista:
 - **Frontend:** estrutura e repositório do React ainda não criados.
 
 ### Armadilhas conhecidas
-- **O CI pode falhar:** o teste padrão `PrecificaodontoBackendApplicationTests` (`contextLoads`) sobe o contexto Spring completo e tenta conectar no PostgreSQL. No GitHub Actions não há banco, então o job pode ficar vermelho. Resolver quando chegar a hora: serviço PostgreSQL no workflow, Testcontainers, ou perfil de teste sem banco.
+- **CI e PostgreSQL:** o teste padrão `contextLoads` sobe o contexto completo e exige PostgreSQL na porta 5432. O workflow `.github/workflows/ci.yml` já conta com o container de serviço `postgres:16-alpine` com healthcheck para que o CI na nuvem passe com sucesso.
 - JDK 17 padrão no terminal vs. JDK 21 exigido (ver seção 4).
 - Flyway sem pasta `db/migration` não derruba a aplicação por padrão, mas o aviso aparece nos logs.
 

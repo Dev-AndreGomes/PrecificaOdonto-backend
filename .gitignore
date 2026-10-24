@@ -1,0 +1,73 @@
+# ==========================================
+# PrecificaOdonto Backend - .gitignore
+# ==========================================
+
+# Compilacao e Build (Maven)
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Logs e Arquivos Temporarios
+*.log
+logs/
+*.tmp
+*.bak
+
+# Arquivos de Configuracao Sensivel / Variaveis de Ambiente
+.env
+.env.local
+.env.*.local
+
+# IntelliJ IDEA
+.idea/
+out/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse / STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+# Visual Studio Code
+.vscode/
+
+# Arquivos de Sistema Operacional
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Docker & Bancos de Dados locais
+postgres_data/
+docker-data/
+
+# Arquivos de despejo de memoria e crash da JVM
+hs_err_pid*
+replay_pid*

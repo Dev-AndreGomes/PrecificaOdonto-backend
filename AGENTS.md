@@ -52,6 +52,7 @@ Também fora do MVP: convênios/TUSS como auditoria de rentabilidade, orçamento
 | Segurança | Spring Security + JWT (`com.auth0:java-jwt`) | Stateless. |
 | Validação | Bean Validation | `spring-boot-starter-validation`. |
 | Excel | Apache POI (`poi-ooxml`) | Geração de `.xlsx` com fórmulas. |
+| Documentação da API | springdoc-openapi 3.2.0 (Swagger UI) | Série 3.x é a que suporta Spring Boot 4. UI em `/swagger-ui.html`. |
 | Boilerplate | Lombok | Annotation processor já configurado no `pom.xml`. |
 | CI | GitHub Actions | `.github/workflows/ci.yml`. |
 | Frontend | React + Vite + TypeScript + Tailwind | **Repositório separado**, não vive aqui. |
@@ -252,18 +253,21 @@ Dado o `precoPraticado` informado pela dentista:
 - [x] `.gitignore` revisado.
 - [x] Workflow de CI (`.github/workflows/ci.yml`).
 - [x] Build `test-compile` passando com JDK 21.
-- [x] Motor financeiro (`calculo`): `CalculadoraHoraClinica` e `CalculadoraPrecificacao` com 20 testes unitários passando.
+- [x] Motor financeiro (`calculo`): `CalculadoraHoraClinica` e `CalculadoraPrecificacao` com testes unitários passando.
+- [x] Swagger UI (springdoc 3.2.0) com `OpenApiConfig`.
+- [x] **Passo 4.5**: `CalculoController` (endpoints REST para hora clínica e precificação), `SecurityConfig` liberando rotas públicas de cálculo e Swagger, testes de integração MockMvc (`CalculoControllerTest`, totalizando 23 testes no projeto) e protótipo web responsivo em `src/main/resources/static/index.html` consumindo o motor financeiro.
 
 ### Roadmap (baby steps, em ordem)
 1. [ ] Subir o banco (`docker compose up -d`) e validar conexão.
 2. [x] **Motor financeiro em Java puro** (`calculo`): Hora Clínica e Precificação + testes JUnit.
-3. [ ] Modelagem de dados e persistência (usuário, config, custos fixos, insumos, procedimentos, ficha técnica).
-4. [ ] Autenticação JWT + conta `LIFETIME` da usuária zero.
-5. [ ] Endpoints REST (onboarding, hora clínica, procedimentos).
-6. [ ] Kit inicial pré-carregado.
-7. [ ] Exportação `.xlsx` (Apache POI) com fórmulas vivas.
-8. [ ] Integração com o frontend React (repo separado).
-9. [ ] (Futuro) Webhook de pagamento, login social com Google OAuth2, hospedagem em nuvem, modo Clínica Consolidada.
+3. [x] **Passo 4.5**: Controller REST de cálculos + Security básica + Protótipo HTML no backend.
+4. [ ] Modelagem de dados e persistência (usuário, config, custos fixos, insumos, procedimentos, ficha técnica).
+5. [ ] Autenticação JWT + conta `LIFETIME` da usuária zero.
+6. [ ] Endpoints REST completos de gestão clínica (onboarding, hora clínica, procedimentos).
+7. [ ] Kit inicial pré-carregado.
+8. [ ] Exportação `.xlsx` (Apache POI) com fórmulas vivas.
+9. [ ] Construção do frontend oficial React (repo separado `precificaodonto-frontend`).
+10. [ ] (Futuro) Webhook de pagamento, login social com Google OAuth2, hospedagem em nuvem, modo Clínica Consolidada.
 
 ### Decisões em aberto (perguntar ao autor antes de assumir)
 - **Estratégia de schema:** `application.properties` está hoje com `spring.jpa.hibernate.ddl-auto=update` (conveniência de início). Há uma dependência de **Flyway** no `pom.xml`, mas **nenhuma migração existe** (as `V1`/`V2` foram removidas de propósito, a pedido do autor). Definir: manter `update` no início e migrar para Flyway depois, ou adotar Flyway já. Antes de produção, **`ddl-auto=update` não deve ser usado**.
@@ -273,6 +277,7 @@ Dado o `precoPraticado` informado pela dentista:
 ### Armadilhas conhecidas
 - **CI e PostgreSQL:** o teste padrão `contextLoads` sobe o contexto completo e exige PostgreSQL na porta 5432. O workflow `.github/workflows/ci.yml` já conta com o container de serviço `postgres:16-alpine` com healthcheck para que o CI na nuvem passe com sucesso.
 - JDK 17 padrão no terminal vs. JDK 21 exigido (ver seção 4).
+- **Swagger atrás do login padrão do Spring Security:** até existir a `SecurityConfig` (Baby Step 8), `/swagger-ui.html` e `/v3/api-docs` respondem 401. No navegador aparece o formulário de login do Spring: usuário `user` e a senha gerada, impressa no console ao subir a aplicação (`Using generated security password`).
 - Flyway sem pasta `db/migration` não derruba a aplicação por padrão, mas o aviso aparece nos logs.
 
 ---

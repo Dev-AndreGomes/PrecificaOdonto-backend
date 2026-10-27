@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrecificaOdonto - Calculadora do Dentista Autônomo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center text-white font-bold text-xl shadow-md shadow-teal-500/20">
+          🦷
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-slate-900 leading-tight">PrecificaOdonto</h1>
+          <p class="text-xs text-slate-500 font-medium">Gestão & Precificação para Dentistas Solo</p>
+        </div>
+      </div>
+      <a href="/swagger-ui.html" target="_blank" class="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+        <span>📖 Swagger API</span>
+        <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-5xl mx-auto px-4 py-8 flex-1 w-full">
+
+    <!-- Navegação de Abas -->
+    <div class="flex justify-center mb-8">
+      <div class="inline-flex p-1 bg-slate-200/80 rounded-2xl shadow-inner">
+        <button id="tab-hora-btn" onclick="trocarAba('hora')" class="px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-white text-teal-700 shadow-sm">
+          ⏱️ 1. Custo da Hora Clínica
+        </button>
+        <button id="tab-preco-btn" onclick="trocarAba('preco')" class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all text-slate-600 hover:text-slate-900">
+          🏷️ 2. Precificação de Procedimento
+        </button>
+      </div>
+    </div>
+
+    <!-- ABA 1: HORA CLÍNICA -->
+    <section id="secao-hora" class="space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+        <div class="max-w-2xl mb-6">
+          <h2 class="text-xl font-bold text-slate-900">Calculadora de Hora Clínica</h2>
+          <p class="text-sm text-slate-500 mt-1">Descubra quanto custa 1 hora e 1 minuto do seu consultório de pé, já incluindo sua meta salarial e a ociosidade da agenda.</p>
+        </div>
+
+        <form id="form-hora" onsubmit="calcularHoraClinica(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Dias de atendimento por semana</label>
+            <input type="number" id="hc-dias" value="5" min="1" max="7" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Ex: 5 dias (segunda a sexta)</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Horas de atendimento por dia</label>
+            <input type="number" id="hc-horas" value="8" step="0.5" min="1" max="24" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Ex: 8 horas diárias de agenda</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Taxa estimada de ociosidade / faltas (%)</label>
+            <input type="number" id="hc-ociosidade" value="20" step="1" min="0" max="99" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Padrão do mercado solo: 20% a 30%</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Custo de sublocação por hora (R$)</label>
+            <input type="number" id="hc-sublocacao" value="0.00" step="0.01" min="0" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Deixe 0 se o consultório for próprio/aluguel fixo</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Custos Fixos Mensais do Consultório (R$)</label>
+            <input type="number" id="hc-fixos" value="3500.00" step="0.01" min="0" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Aluguel, luz, internet, secretária, CRO, contador</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Sua Meta de Pró-labore Líquido (R$)</label>
+            <input type="number" id="hc-prolabore" value="10000.00" step="0.01" min="0" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Quanto você dentista quer levar limpo para casa</span>
+          </div>
+
+          <div class="sm:col-span-2 pt-2">
+            <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg shadow-teal-600/20 transition flex items-center justify-center space-x-2">
+              <span>Calcular Custo da Hora</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+          </div>
+        </form>
+
+        <!-- Resultado Hora Clínica -->
+        <div id="resultado-hora" class="hidden mt-8 pt-8 border-t border-slate-200">
+          <div class="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl p-6 border border-teal-100">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="bg-white p-4 rounded-xl border border-teal-100/60 shadow-sm">
+                <span class="text-xs text-slate-500 font-medium block">Custo por Hora</span>
+                <span id="res-hora" class="text-2xl font-extrabold text-teal-700">R$ 0,00</span>
+              </div>
+              <div class="bg-white p-4 rounded-xl border border-teal-100/60 shadow-sm">
+                <span class="text-xs text-slate-500 font-medium block">Custo por Minuto</span>
+                <span id="res-minuto" class="text-2xl font-extrabold text-teal-700">R$ 0,00</span>
+              </div>
+              <div class="bg-white p-4 rounded-xl border border-teal-100/60 shadow-sm">
+                <span class="text-xs text-slate-500 font-medium block">Horas Produtivas / Mês</span>
+                <span id="res-horas-mes" class="text-2xl font-bold text-slate-800">0h</span>
+              </div>
+              <div class="bg-white p-4 rounded-xl border border-teal-100/60 shadow-sm">
+                <span class="text-xs text-slate-500 font-medium block">Custo Total Estrutural</span>
+                <span id="res-custo-total" class="text-2xl font-bold text-slate-800">R$ 0,00</span>
+              </div>
+            </div>
+
+            <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/80 p-4 rounded-xl border border-teal-100">
+              <p class="text-xs text-teal-900 font-medium">
+                💡 <span class="font-bold">Pronto!</span> Use esse custo da hora clínica para precificar qualquer consulta ou procedimento com exatidão.
+              </p>
+              <button onclick="levarHoraParaPrecificacao()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-lg shadow-sm transition whitespace-nowrap">
+                Usar na Precificação ➔
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ABA 2: PRECIFICAÇÃO DE PROCEDIMENTO -->
+    <section id="secao-preco" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+        <div class="max-w-2xl mb-6">
+          <h2 class="text-xl font-bold text-slate-900">Precificação de Procedimento (Markup Divisor)</h2>
+          <p class="text-sm text-slate-500 mt-1">Calcule o preço de venda exato com base no tempo de cadeira e insumos, garantindo que o lucro e impostos sejam calculados por dentro.</p>
+        </div>
+
+        <form id="form-preco" onsubmit="calcularPrecificacao(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tempo de Cadeira (em minutos)</label>
+            <input type="number" id="pr-tempo" value="60" min="1" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Ex: 60 minutos (1 hora)</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Custo da Hora Clínica (R$/hora)</label>
+            <input type="number" id="pr-hora-clinica" value="97.43" step="0.0001" min="0" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Vem do cálculo da Aba 1</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Custo dos Insumos da Ficha Técnica (R$)</label>
+            <input type="number" id="pr-insumos" value="35.50" step="0.01" min="0" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Resina, luvas, anestésico, babador, etc.</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Custo de Prótese / Laboratório (R$)</label>
+            <input type="number" id="pr-protetico" value="0.00" step="0.01" min="0" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Deixe 0 se não houver laboratório</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Alíquota de Imposto / Carnê-Leão (%)</label>
+            <input type="number" id="pr-imposto" value="6.0" step="0.1" min="0" max="99" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Simples Nacional ou média de IRPF</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Taxa média da Máquina de Cartão (%)</label>
+            <input type="number" id="pr-cartao" value="3.5" step="0.1" min="0" max="99" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Média entre débito e parcelado</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Margem de Lucro Desejada (%)</label>
+            <input type="number" id="pr-margem" value="30.0" step="0.1" min="0" max="99" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition text-sm">
+            <span class="text-[11px] text-slate-400">Lucro líquido livre além do pró-labore</span>
+          </div>
+
+          <div class="sm:col-span-2 md:col-span-3 pt-2">
+            <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition flex items-center justify-center space-x-2">
+              <span>Calcular Preço Sugerido</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+          </div>
+        </form>
+
+        <!-- Resultado Precificação -->
+        <div id="resultado-preco" class="hidden mt-8 pt-8 border-t border-slate-200">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- Card Destaque: Preço Sugerido -->
+            <div class="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl p-6 text-white shadow-lg shadow-indigo-600/20 flex flex-col justify-between">
+              <div>
+                <span class="inline-block px-2.5 py-1 bg-white/20 rounded-lg text-[11px] font-bold tracking-wide uppercase">Preço Recomendado</span>
+                <div class="mt-4">
+                  <span class="text-xs text-indigo-100 block">Preço de Venda Sugerido</span>
+                  <span id="res-pr-sugerido" class="text-3xl sm:text-4xl font-extrabold tracking-tight">R$ 0,00</span>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-4 border-t border-white/20 flex justify-between items-center text-xs">
+                <span class="text-indigo-100">Lucro Líquido Real</span>
+                <span id="res-pr-lucro" class="font-extrabold text-emerald-300 text-base">R$ 0,00</span>
+              </div>
+            </div>
+
+            <!-- Card Preço Mínimo (Ponto de Equilíbrio) -->
+            <div class="bg-amber-50 rounded-2xl p-6 border border-amber-200/80 flex flex-col justify-between">
+              <div>
+                <span class="inline-block px-2.5 py-1 bg-amber-200 text-amber-900 rounded-lg text-[11px] font-bold tracking-wide uppercase">Ponto de Equilíbrio</span>
+                <div class="mt-4">
+                  <span class="text-xs text-amber-700 block">Preço Mínimo (Sem Lucro)</span>
+                  <span id="res-pr-minimo" class="text-2xl sm:text-3xl font-extrabold text-amber-950">R$ 0,00</span>
+                </div>
+              </div>
+
+              <p class="mt-6 text-xs text-amber-800 leading-relaxed">
+                ⚠️ <span class="font-semibold">Cuidado:</span> Cobrar abaixo deste valor significa que você está pagando para trabalhar.
+              </p>
+            </div>
+
+            <!-- Card Decomposição dos Custos -->
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 flex flex-col justify-between">
+              <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wide">Decomposição do Preço</h3>
+              
+              <div class="space-y-2.5 my-3 text-xs">
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-600 flex items-center"><span class="w-2 h-2 rounded-full bg-teal-500 mr-2"></span>Tempo Clínico</span>
+                  <span id="dec-tempo" class="font-bold text-slate-800">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-600 flex items-center"><span class="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>Insumos</span>
+                  <span id="dec-insumos" class="font-bold text-slate-800">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-600 flex items-center"><span class="w-2 h-2 rounded-full bg-amber-500 mr-2"></span>Prótese</span>
+                  <span id="dec-protetico" class="font-bold text-slate-800">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-600 flex items-center"><span class="w-2 h-2 rounded-full bg-rose-500 mr-2"></span>Impostos & Taxas</span>
+                  <span id="dec-impostos" class="font-bold text-slate-800">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between items-center pt-2 border-t border-slate-200">
+                  <span class="text-emerald-700 font-bold flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>Lucro Livre</span>
+                  <span id="dec-lucro" class="font-extrabold text-emerald-700">R$ 0,00</span>
+                </div>
+              </div>
+
+              <span class="text-[11px] text-slate-400">Total somado fecha exatamente no preço de venda.</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+    PrecificaOdonto &bull; Motor de Precificação Odontológica em Java 21 LTS + Spring Boot 4
+  </footer>
+
+  <script>
+    let ultimaHoraClinicaCalculada = null;
+
+    function formatarMoeda(valor) {
+      return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function trocarAba(aba) {
+      const secaoHora = document.getElementById('secao-hora');
+      const secaoPreco = document.getElementById('secao-preco');
+      const btnHora = document.getElementById('tab-hora-btn');
+      const btnPreco = document.getElementById('tab-preco-btn');
+
+      if (aba === 'hora') {
+        secaoHora.classList.remove('hidden');
+        secaoPreco.classList.add('hidden');
+        btnHora.className = "px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-white text-teal-700 shadow-sm";
+        btnPreco.className = "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all text-slate-600 hover:text-slate-900";
+      } else {
+        secaoHora.classList.add('hidden');
+        secaoPreco.classList.remove('hidden');
+        btnPreco.className = "px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-white text-indigo-700 shadow-sm";
+        btnHora.className = "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all text-slate-600 hover:text-slate-900";
+      }
+    }
+
+    async function calcularHoraClinica(event) {
+      event.preventDefault();
+      const payload = {
+        diasTrabalhoSemana: parseInt(document.getElementById('hc-dias').value),
+        horasPorDia: parseFloat(document.getElementById('hc-horas').value),
+        percentualOciosidade: parseFloat(document.getElementById('hc-ociosidade').value),
+        custoSublocacaoPorHora: parseFloat(document.getElementById('hc-sublocacao').value) || 0,
+        custosFixosMensais: parseFloat(document.getElementById('hc-fixos').value),
+        metaSalarialLiquida: parseFloat(document.getElementById('hc-prolabore').value)
+      };
+
+      try {
+        const res = await fetch('/api/v1/calculos/hora-clinica', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          alert('Erro no cálculo: ' + (err.message || 'Verifique os dados informados'));
+          return;
+        }
+
+        const data = await res.json();
+        ultimaHoraClinicaCalculada = data.horaClinica;
+
+        document.getElementById('res-hora').textContent = formatarMoeda(data.horaClinica);
+        document.getElementById('res-minuto').textContent = formatarMoeda(data.minutoClinico);
+        document.getElementById('res-horas-mes').textContent = Number(data.horasProdutivasMes).toFixed(1) + 'h';
+        document.getElementById('res-custo-total').textContent = formatarMoeda(data.custoEstruturalMensal);
+
+        document.getElementById('resultado-hora').classList.remove('hidden');
+        document.getElementById('resultado-hora').scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        alert('Falha na comunicação com o backend: ' + err.message);
+      }
+    }
+
+    function levarHoraParaPrecificacao() {
+      if (ultimaHoraClinicaCalculada) {
+        document.getElementById('pr-hora-clinica').value = Number(ultimaHoraClinicaCalculada).toFixed(4);
+      }
+      trocarAba('preco');
+      document.getElementById('secao-preco').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function calcularPrecificacao(event) {
+      event.preventDefault();
+      const payload = {
+        tempoMinutos: parseInt(document.getElementById('pr-tempo').value),
+        horaClinica: parseFloat(document.getElementById('pr-hora-clinica').value),
+        custoInsumos: parseFloat(document.getElementById('pr-insumos').value),
+        custoProtetico: parseFloat(document.getElementById('pr-protetico').value) || 0,
+        percentualImposto: parseFloat(document.getElementById('pr-imposto').value),
+        percentualCartao: parseFloat(document.getElementById('pr-cartao').value),
+        percentualMargemLucro: parseFloat(document.getElementById('pr-margem').value)
+      };
+
+      try {
+        const res = await fetch('/api/v1/calculos/precificacao', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          alert('Erro no cálculo: ' + (err.message || 'Verifique os dados informados'));
+          return;
+        }
+
+        const data = await res.json();
+
+        document.getElementById('res-pr-sugerido').textContent = formatarMoeda(data.precoSugerido);
+        document.getElementById('res-pr-lucro').textContent = formatarMoeda(data.decomposicao.lucroLivre);
+        document.getElementById('res-pr-minimo').textContent = formatarMoeda(data.precoMinimo);
+
+        document.getElementById('dec-tempo').textContent = formatarMoeda(data.decomposicao.tempoClinico);
+        document.getElementById('dec-insumos').textContent = formatarMoeda(data.decomposicao.insumos);
+        document.getElementById('dec-protetico').textContent = formatarMoeda(data.decomposicao.protetico);
+        document.getElementById('dec-impostos').textContent = formatarMoeda(data.decomposicao.impostosETaxas);
+        document.getElementById('dec-lucro').textContent = formatarMoeda(data.decomposicao.lucroLivre);
+
+        document.getElementById('resultado-preco').classList.remove('hidden');
+        document.getElementById('resultado-preco').scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        alert('Falha na comunicação com o backend: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

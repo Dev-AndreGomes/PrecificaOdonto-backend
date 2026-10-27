@@ -255,14 +255,15 @@ Dado o `precoPraticado` informado pela dentista:
 - [x] Build `test-compile` passando com JDK 21.
 - [x] Motor financeiro (`calculo`): `CalculadoraHoraClinica` e `CalculadoraPrecificacao` com testes unitários passando.
 - [x] Swagger UI (springdoc 3.2.0) com `OpenApiConfig`.
-- [x] **Passo 4.5**: `CalculoController` (endpoints REST para hora clínica e precificação), `SecurityConfig` liberando rotas públicas de cálculo e Swagger, testes de integração MockMvc (`CalculoControllerTest`, totalizando 23 testes no projeto) e protótipo web responsivo em `src/main/resources/static/index.html` consumindo o motor financeiro.
+- [x] **Passo 4.5**: `CalculoController` (endpoints REST para hora clínica e precificação), `SecurityConfig` liberando rotas públicas de cálculo e Swagger, testes de integração MockMvc (`CalculoControllerTest`) e protótipo web responsivo em `src/main/resources/static/index.html` consumindo o motor financeiro.
+- [x] **Baby Steps 5 e 6 (Domínio JPA e Repositórios)**: Entidades `Usuario` (com planos de assinatura e perfil `LIFETIME` permanente para a noiva), `ConfigClinica`, `CustoFixo`, `Insumo`, `Procedimento` e `ProcedimentoInsumo`, enums `PlanoAssinatura` e `ProvedorAuth`, e repositórios Spring Data JPA com testes automatizados (`UsuarioTest`, total de 26 testes passando no projeto).
 
 ### Roadmap (baby steps, em ordem)
 1. [ ] Subir o banco (`docker compose up -d`) e validar conexão.
 2. [x] **Motor financeiro em Java puro** (`calculo`): Hora Clínica e Precificação + testes JUnit.
 3. [x] **Passo 4.5**: Controller REST de cálculos + Security básica + Protótipo HTML no backend.
-4. [ ] Modelagem de dados e persistência (usuário, config, custos fixos, insumos, procedimentos, ficha técnica).
-5. [ ] Autenticação JWT + conta `LIFETIME` da usuária zero.
+4. [x] **Baby Steps 5 e 6**: Modelagem de dados JPA e repositórios (usuário, config, custos fixos, insumos, procedimentos, ficha técnica).
+5. [ ] Autenticação JWT (TokenService com Auth0 + BCrypt) + conta `LIFETIME` da usuária zero.
 6. [ ] Endpoints REST completos de gestão clínica (onboarding, hora clínica, procedimentos).
 7. [ ] Kit inicial pré-carregado.
 8. [ ] Exportação `.xlsx` (Apache POI) com fórmulas vivas.

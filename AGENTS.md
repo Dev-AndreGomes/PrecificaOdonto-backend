@@ -252,10 +252,11 @@ Dado o `precoPraticado` informado pela dentista:
 - [x] `.gitignore` revisado.
 - [x] Workflow de CI (`.github/workflows/ci.yml`).
 - [x] Build `test-compile` passando com JDK 21.
+- [x] Motor financeiro (`calculo`): `CalculadoraHoraClinica` e `CalculadoraPrecificacao` com 20 testes unitários passando.
 
 ### Roadmap (baby steps, em ordem)
 1. [ ] Subir o banco (`docker compose up -d`) e validar conexão.
-2. [ ] **Motor financeiro em Java puro** (`calculo`): Hora Clínica e Precificação + testes JUnit.
+2. [x] **Motor financeiro em Java puro** (`calculo`): Hora Clínica e Precificação + testes JUnit.
 3. [ ] Modelagem de dados e persistência (usuário, config, custos fixos, insumos, procedimentos, ficha técnica).
 4. [ ] Autenticação JWT + conta `LIFETIME` da usuária zero.
 5. [ ] Endpoints REST (onboarding, hora clínica, procedimentos).

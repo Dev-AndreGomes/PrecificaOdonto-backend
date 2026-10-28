@@ -257,18 +257,20 @@ Dado o `precoPraticado` informado pela dentista:
 - [x] Swagger UI (springdoc 3.2.0) com `OpenApiConfig`.
 - [x] **Passo 4.5**: `CalculoController` (endpoints REST para hora clínica e precificação), `SecurityConfig` liberando rotas públicas de cálculo e Swagger, testes de integração MockMvc (`CalculoControllerTest`) e protótipo web responsivo em `src/main/resources/static/index.html` consumindo o motor financeiro.
 - [x] **Baby Steps 5 e 6 (Domínio JPA e Repositórios)**: Entidades `Usuario` (com planos de assinatura e perfil `LIFETIME` permanente para a noiva), `ConfigClinica`, `CustoFixo`, `Insumo`, `Procedimento` e `ProcedimentoInsumo`, enums `PlanoAssinatura` e `ProvedorAuth`, e repositórios Spring Data JPA com testes automatizados (`UsuarioTest`, total de 26 testes passando no projeto).
+- [x] **Fase 1 / Baby Steps 1 e 2 (Conexão Fullstack & Banco)**: PostgreSQL 16 ativo via Docker Compose, auto-configuração JPA restabelecida com schema validado, `DatabaseInitializer` criando perfil VIP da Dra. Mariana Costa, CORS habilitado e projeto React criado em `C:\Users\andre\vscodeprojects\precificaodonto-frontend` com Axios e badge de status em tempo real.
 
 ### Roadmap (baby steps, em ordem)
-1. [ ] Subir o banco (`docker compose up -d`) e validar conexão.
+1. [x] Subir o banco (`docker compose up -d`) e validar conexão.
 2. [x] **Motor financeiro em Java puro** (`calculo`): Hora Clínica e Precificação + testes JUnit.
 3. [x] **Passo 4.5**: Controller REST de cálculos + Security básica + Protótipo HTML no backend.
 4. [x] **Baby Steps 5 e 6**: Modelagem de dados JPA e repositórios (usuário, config, custos fixos, insumos, procedimentos, ficha técnica).
-5. [ ] Autenticação JWT (TokenService com Auth0 + BCrypt) + conta `LIFETIME` da usuária zero.
-6. [ ] Endpoints REST completos de gestão clínica (onboarding, hora clínica, procedimentos).
-7. [ ] Kit inicial pré-carregado.
-8. [ ] Exportação `.xlsx` (Apache POI) com fórmulas vivas.
-9. [ ] Construção do frontend oficial React (repo separado `precificaodonto-frontend`).
-10. [ ] (Futuro) Webhook de pagamento, login social com Google OAuth2, hospedagem em nuvem, modo Clínica Consolidada.
+5. [x] **Fase 1 (Frontend Setup & CORS)**: Inicialização do repositório React em `C:\Users\andre\vscodeprojects\precificaodonto-frontend` e conexão HTTP/CORS validada.
+6. [ ] **Fase 2 (Hora Clínica & Custos Fixos)**: API REST completa de despesas e rotina + tela interativa correspondente no React.
+7. [ ] **Fase 3 (Kits de Materiais)**: API de kits estimados + tela de cards rápidos.
+8. [ ] **Fase 4 (Procedimentos & Semáforo)**: API com cálculo dinâmico de margem + tabela interativa.
+9. [ ] **Fase 5 (Simulador Financeiro)**: Cartão (1x a 12x), PIX, Convênio e Comissão.
+10. [ ] **Fase 6 (Dashboard)**: Bússola e widget rápido de balcão.
+11. [ ] **Fase 7 (Autenticação)**: JWT (Auth0 + BCrypt), login/cadastro e selo VIP.
 
 ### Decisões em aberto (perguntar ao autor antes de assumir)
 - **Estratégia de schema:** `application.properties` está hoje com `spring.jpa.hibernate.ddl-auto=update` (conveniência de início). Há uma dependência de **Flyway** no `pom.xml`, mas **nenhuma migração existe** (as `V1`/`V2` foram removidas de propósito, a pedido do autor). Definir: manter `update` no início e migrar para Flyway depois, ou adotar Flyway já. Antes de produção, **`ddl-auto=update` não deve ser usado**.

@@ -259,6 +259,9 @@ Dado o `precoPraticado` informado pela dentista:
 - [x] **Baby Steps 5 e 6 (Domínio JPA e Repositórios)**: Entidades `Usuario` (com planos de assinatura e perfil `LIFETIME` permanente para a noiva), `ConfigClinica`, `CustoFixo`, `Insumo`, `Procedimento` e `ProcedimentoInsumo`, enums `PlanoAssinatura` e `ProvedorAuth`, e repositórios Spring Data JPA com testes automatizados (`UsuarioTest`, total de 26 testes passando no projeto).
 - [x] **Fase 1 / Baby Steps 1 e 2 (Conexão Fullstack & Banco)**: PostgreSQL 16 ativo via Docker Compose, auto-configuração JPA restabelecida com schema validado, `DatabaseInitializer` criando perfil de desenvolvimento, CORS habilitado e projeto React criado em `C:\Users\andre\vscodeprojects\precificaodonto-frontend` com Axios e badge de status em tempo real.
 - [x] **Baby Step 3 (API REST de Hora Clínica e Custos Fixos)**: Controllers e Services para gestão de Custos Fixos (`/api/v1/custos-fixos`), Configuração da Clínica (`/api/v1/config-clinica`) e Resumo Executivo em tempo real (`/api/v1/hora-clinica/resumo`), integrando o motor matemático financeiro diretamente com o banco de dados.
+- [x] **Baby Step 4 (Tela React 'Minha Hora Clínica')**: Interface interativa no React conectada à API REST (`HoraClinicaView`), com recálculo em tempo real da Hora Clínica, cadastro e exclusão de contas mensais e ajuste de rotina de trabalho.
+- [x] **Baby Step 5 (API REST Kits de Materiais)**: Entidade `KitMaterial`, DTOs, serviço e controller `/api/v1/kits-materiais` com custo estimado e composição opcional, sem burocracia de estoque, além de presets odontológicos carregados pelo `DatabaseInitializer`.
+- [x] **Baby Step 6 (Tela React 'Kits de Materiais')**: Interface interativa no React (`KitsMateriaisView`), com catálogo em cards modernos, filtro em tempo real por nome/composição, destaque do Kit Biossegurança da cadeira e modal para cadastrar/editar kits em segundos.
 
 ### Roadmap (baby steps, em ordem)
 1. [x] Subir o banco (`docker compose up -d`) e validar conexão.
@@ -268,11 +271,12 @@ Dado o `precoPraticado` informado pela dentista:
 5. [x] **Fase 1 (Frontend Setup & CORS)**: Inicialização do repositório React em `C:\Users\andre\vscodeprojects\precificaodonto-frontend` e conexão HTTP/CORS validada.
 6. [x] **Baby Step 3 (API REST Hora Clínica & Custos Fixos)**: Endpoints REST completos de despesas, rotina e resumo executivo.
 7. [x] **Baby Step 4 (Tela React 'Minha Hora Clínica')**: Interface interativa no React conectada à API REST (`HoraClinicaView`), com recálculo em tempo real da Hora Clínica, cadastro e exclusão de contas mensais e ajuste de rotina de trabalho.
-8. [ ] **Fase 3 (Kits de Materiais)**: API de kits estimados + tela de cards rápidos.
-9. [ ] **Fase 4 (Procedimentos & Semáforo)**: API com cálculo dinâmico de margem + tabela interativa.
-10. [ ] **Fase 5 (Simulador Financeiro)**: Cartão (1x a 12x), PIX, Convênio e Comissão.
-11. [ ] **Fase 6 (Dashboard)**: Bússola e widget rápido de balcão.
-12. [ ] **Fase 7 (Autenticação)**: JWT (Auth0 + BCrypt), login/cadastro e selo VIP.
+8. [x] **Baby Step 5 (API REST Kits de Materiais)**: Endpoints `/api/v1/kits-materiais` com custo estimado e composição opcional + presets odontológicos.
+9. [x] **Baby Step 6 (Tela React 'Kits de Materiais')**: Interface com visualização em cards, kit biossegurança em destaque e modal rápido de adição.
+10. [ ] **Fase 4 (Procedimentos & Semáforo)**: API com cálculo dinâmico de margem + tabela interativa.
+11. [ ] **Fase 5 (Simulador Financeiro)**: Cartão (1x a 12x), PIX, Convênio e Comissão.
+12. [ ] **Fase 6 (Dashboard)**: Bússola e widget rápido de balcão.
+13. [ ] **Fase 7 (Autenticação)**: JWT (Auth0 + BCrypt), login/cadastro e selo VIP.
 
 ### Decisões em aberto (perguntar ao autor antes de assumir)
 - **Estratégia de schema:** `application.properties` está hoje com `spring.jpa.hibernate.ddl-auto=update` (conveniência de início). Há uma dependência de **Flyway** no `pom.xml`, mas **nenhuma migração existe** (as `V1`/`V2` foram removidas de propósito, a pedido do autor). Definir: manter `update` no início e migrar para Flyway depois, ou adotar Flyway já. Antes de produção, **`ddl-auto=update` não deve ser usado**.

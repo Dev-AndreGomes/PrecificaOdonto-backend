@@ -25,8 +25,7 @@ class HoraClinicaControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("GET /api/v1/hora-clinica/resumo deve retornar o cálculo em tempo real")

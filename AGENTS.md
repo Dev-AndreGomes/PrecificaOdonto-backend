@@ -14,7 +14,7 @@
 **Proposta de valor:** a partir da meta de renda líquida, das horas trabalhadas e dos custos do local de atendimento, o sistema calcula a **Hora Clínica** e o **preço mínimo e sugerido** de cada procedimento, mostrando de forma visual para onde vai cada real cobrado.
 
 ### Usuária zero
-A primeira usuária é a noiva do autor, que está se formando em Odontologia. Ela terá conta `LIFETIME` (sem cobrança, sem expiração). O produto deve parecer exclusivo dela, sem telas de cobrança ou avisos de plano.
+O primeiro usuário é o teste do autor, que está se formando em Odontologia. Ela terá conta `LIFETIME` (sem cobrança, sem expiração). O produto deve parecer exclusivo dela, sem telas de cobrança ou avisos de plano.
 
 ### Visão de negócio (futuro)
 Potencial de venda como SaaS para outros dentistas autônomos. Por isso o código nasce **multi-tenant por usuário** (todo dado pertence a um `usuario_id`) e com **plano de assinatura** modelado desde cedo. Cobrança é feita **"por fora"** (checkout externo + webhook), nunca processando cartão dentro do app.
@@ -256,7 +256,7 @@ Dado o `precoPraticado` informado pela dentista:
 - [x] Motor financeiro (`calculo`): `CalculadoraHoraClinica` e `CalculadoraPrecificacao` com testes unitários passando.
 - [x] Swagger UI (springdoc 3.2.0) com `OpenApiConfig`.
 - [x] **Passo 4.5**: `CalculoController` (endpoints REST para hora clínica e precificação), `SecurityConfig` liberando rotas públicas de cálculo e Swagger, testes de integração MockMvc (`CalculoControllerTest`) e protótipo web responsivo em `src/main/resources/static/index.html` consumindo o motor financeiro.
-- [x] **Baby Steps 5 e 6 (Domínio JPA e Repositórios)**: Entidades `Usuario` (com planos de assinatura e perfil `LIFETIME` permanente para a noiva), `ConfigClinica`, `CustoFixo`, `Insumo`, `Procedimento` e `ProcedimentoInsumo`, enums `PlanoAssinatura` e `ProvedorAuth`, e repositórios Spring Data JPA com testes automatizados (`UsuarioTest`, total de 26 testes passando no projeto).
+- [x] **Baby Steps 5 e 6 (Domínio JPA e Repositórios)**: Entidades `Usuario` (com planos de assinatura e perfil `LIFETIME` permanente para o usuario teste), `ConfigClinica`, `CustoFixo`, `Insumo`, `Procedimento` e `ProcedimentoInsumo`, enums `PlanoAssinatura` e `ProvedorAuth`, e repositórios Spring Data JPA com testes automatizados (`UsuarioTest`, total de 26 testes passando no projeto).
 - [x] **Fase 1 / Baby Steps 1 e 2 (Conexão Fullstack & Banco)**: PostgreSQL 16 ativo via Docker Compose, auto-configuração JPA restabelecida com schema validado, `DatabaseInitializer` criando perfil de desenvolvimento, CORS habilitado e projeto React criado em `C:\Users\andre\vscodeprojects\precificaodonto-frontend` com Axios e badge de status em tempo real.
 - [x] **Baby Step 3 (API REST de Hora Clínica e Custos Fixos)**: Controllers e Services para gestão de Custos Fixos (`/api/v1/custos-fixos`), Configuração da Clínica (`/api/v1/config-clinica`) e Resumo Executivo em tempo real (`/api/v1/hora-clinica/resumo`), integrando o motor matemático financeiro diretamente com o banco de dados.
 - [x] **Baby Step 4 (Tela React 'Minha Hora Clínica')**: Interface interativa no React conectada à API REST (`HoraClinicaView`), com recálculo em tempo real da Hora Clínica, cadastro e exclusão de contas mensais e ajuste de rotina de trabalho.

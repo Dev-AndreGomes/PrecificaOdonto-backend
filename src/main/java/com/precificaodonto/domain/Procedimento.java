@@ -53,6 +53,10 @@ public class Procedimento {
     @Column(name = "tempo_minutos", nullable = false)
     private int tempoMinutos;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "kit_material_id")
+    private KitMaterial kitMaterial;
+
     @Column(name = "custo_protetico", nullable = false, precision = 12, scale = 2)
     @Builder.Default
     private BigDecimal custoProtetico = BigDecimal.ZERO;

@@ -5,8 +5,10 @@ import com.precificaodonto.domain.KitMaterial;
 import com.precificaodonto.domain.Usuario;
 import com.precificaodonto.domain.enums.PlanoAssinatura;
 import com.precificaodonto.domain.enums.ProvedorAuth;
+import com.precificaodonto.domain.Procedimento;
 import com.precificaodonto.repository.ConfigClinicaRepository;
 import com.precificaodonto.repository.KitMaterialRepository;
+import com.precificaodonto.repository.ProcedimentoRepository;
 import com.precificaodonto.repository.UsuarioRepository;
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,7 +18,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Inicializa dados essenciais no banco para desenvolvimento local (Usuário Teste, Configuração padrão e Kits pré-carregados).
+ * Inicializa dados essenciais no banco para desenvolvimento local (Usuário Teste, Configuração padrão, Kits e Procedimentos pré-carregados).
  */
 @Configuration
 public class DatabaseInitializer implements CommandLineRunner {
@@ -27,13 +29,16 @@ public class DatabaseInitializer implements CommandLineRunner {
     private final UsuarioRepository usuarioRepository;
     private final ConfigClinicaRepository configClinicaRepository;
     private final KitMaterialRepository kitMaterialRepository;
+    private final ProcedimentoRepository procedimentoRepository;
 
     public DatabaseInitializer(UsuarioRepository usuarioRepository,
                                ConfigClinicaRepository configClinicaRepository,
-                               KitMaterialRepository kitMaterialRepository) {
+                               KitMaterialRepository kitMaterialRepository,
+                               ProcedimentoRepository procedimentoRepository) {
         this.usuarioRepository = usuarioRepository;
         this.configClinicaRepository = configClinicaRepository;
         this.kitMaterialRepository = kitMaterialRepository;
+        this.procedimentoRepository = procedimentoRepository;
     }
 
     @Override
@@ -111,6 +116,78 @@ public class DatabaseInitializer implements CommandLineRunner {
 
             kitMaterialRepository.saveAll(presets);
             log.info("Presets de kits de materiais cadastrados com sucesso para o usuário.");
+        }
+
+        if (procedimentoRepository.findByUsuarioId(usuaria.getId()).isEmpty()) {
+            List<KitMaterial> kits = kitMaterialRepository.findByUsuarioId(usuaria.getId());
+            KitMaterial kitResina = kits.stream()
+                    .filter(k -> k.getNome().contains("Resina"))
+                    .findFirst().orElse(null);
+            KitMaterial kitProfilaxia = kits.stream()
+                    .filter(k -> k.getNome().contains("Profilaxia"))
+                    .findFirst().orElse(null);
+            KitMaterial kitClareamento = kits.stream()
+                    .filter(k -> k.getNome().contains("Clareamento"))
+                    .findFirst().orElse(null);
+            KitMaterial kitCirurgia = kits.stream()
+                    .filter(k -> k.getNome().contains("Exodontia") || k.getNome().contains("Cirurgia"))
+                    .findFirst().orElse(null);
+
+            List<Procedimento> procedimentosIniciais = List.of(
+                    Procedimento.builder()
+                            .usuario(usuaria)
+                            .nome("Restauração em Resina Composta (1 Face)")
+                            .codigoTuss("31001258")
+                            .tempoMinutos(45)
+                            .kitMaterial(kitResina)
+                            .custoProtetico(BigDecimal.ZERO)
+                            .precoPraticado(new BigDecimal("220.00"))
+                            .margemLucroDesejada(new BigDecimal("35.00"))
+                            .build(),
+                    Procedimento.builder()
+                            .usuario(usuaria)
+                            .nome("Profilaxia Completa com Ultrassom")
+                            .codigoTuss("31001010")
+                            .tempoMinutos(30)
+                            .kitMaterial(kitProfilaxia)
+                            .custoProtetico(BigDecimal.ZERO)
+                            .precoPraticado(new BigDecimal("180.00"))
+                            .margemLucroDesejada(new BigDecimal("30.00"))
+                            .build(),
+                    Procedimento.builder()
+                            .usuario(usuaria)
+                            .nome("Clareamento Dental de Consultório")
+                            .codigoTuss("31001150")
+                            .tempoMinutos(60)
+                            .kitMaterial(kitClareamento)
+                            .custoProtetico(BigDecimal.ZERO)
+                            .precoPraticado(new BigDecimal("650.00"))
+                            .margemLucroDesejada(new BigDecimal("40.00"))
+                            .build(),
+                    Procedimento.builder()
+                            .usuario(usuaria)
+                            .nome("Exodontia Simples de Dente Permanente")
+                            .codigoTuss("31002017")
+                            .tempoMinutos(45)
+                            .kitMaterial(kitCirurgia)
+                            .custoProtetico(BigDecimal.ZERO)
+                            .precoPraticado(new BigDecimal("250.00"))
+                            .margemLucroDesejada(new BigDecimal("30.00"))
+                            .build(),
+                    Procedimento.builder()
+                            .usuario(usuaria)
+                            .nome("Coroa Provisória em Resina Acrílica")
+                            .codigoTuss("31003104")
+                            .tempoMinutos(60)
+                            .kitMaterial(null)
+                            .custoProtetico(new BigDecimal("80.00"))
+                            .precoPraticado(new BigDecimal("130.00")) // Propositalmente com margem apertada/prejuízo para testar semáforo
+                            .margemLucroDesejada(new BigDecimal("30.00"))
+                            .build()
+            );
+
+            procedimentoRepository.saveAll(procedimentosIniciais);
+            log.info("Catálogo inicial de procedimentos cadastrado com sucesso para o usuário.");
         }
     }
 }
